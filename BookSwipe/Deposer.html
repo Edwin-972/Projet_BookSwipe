@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Déposer une annonce - BookSwipe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="deposer.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="BookSwipe.html" class="logo" aria-label="BookSwipe Logo">BookSwipe</a>
+            <a href="Deposer.html" class="nav-button" aria-label="Déposer une annonce">Déposer une annonce</a>
+        </div>
+        <div class="navbar-center">
+            <input type="text" placeholder="Rechercher..." class="search-bar" aria-label="Rechercher des livres">
+            <i class="fas fa-search search-icon" aria-hidden="true"></i>
+        </div>
+        <div class="navbar-right">
+            <button class="nav-button" aria-label="Favoris">Favori</button>
+            <button class="nav-button" aria-label="Messages">Message</button>
+            <button class="nav-button" aria-label="Connexion ou Inscription">Connexion/Inscription</button>
+        </div>
+    </nav>
+    
+    <main class="main-content depot-main">
+        <h1>Déposer une annonce</h1>
+        <form id="annonce-form" class="depot-form">
+            <div class="form-group">
+                <label for="title" class="required-field">Titre du livre</label>
+                <input type="text" id="title" name="title" required placeholder="Ex: Le Petit Prince">
+            </div>
+            
+            <div class="form-group">
+                <label for="author" class="required-field">Auteur</label>
+                <input type="text" id="author" name="author" required placeholder="Ex: Antoine de Saint-Exupéry">
+            </div>
+            
+            <div class="form-group">
+                <label for="category" class="required-field">Catégorie</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>Sélectionnez une catégorie</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="non-fiction">Non-Fiction</option>
+                    <option value="science">Science</option>
+                    <option value="histoire">Histoire</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="condition" class="required-field">État du livre</label>
+                <select id="condition" name="condition" required>
+                    <option value="" disabled selected>Sélectionnez l'état</option>
+                    <option value="new">Neuf</option>
+                    <option value="used">Occasion</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="location" class="required-field">Localisation</label>
+                <input type="text" id="location" name="location" required placeholder="Ex: Paris, France">
+            </div>
+            
+            <div class="form-group">
+                <label for="description" class="required-field">Description</label>
+                <textarea id="description" name="description" required placeholder="Décrivez l'état du livre, son histoire,et contre quoi vous voulez l'echanger"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="image-upload">Image du livre (facultatif)</label>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                <div id="drop-zone" class="drop-zone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Glissez-déposez une image ici ou cliquez pour sélectionner</p>
+                    <p class="small">Formats acceptés : JPG, PNG (max 5MB)</p>
+                </div>
+            </div>
+
+           
+
+            <button type="submit" class="submit-button">
+                <span class="button-text">Publier l'annonce</span>
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <span>Publication en cours...</span>
+                </div>
+            </button>
+            
+            <div class="confirmation-message">
+                <i class="fas fa-check-circle"></i> Votre annonce a été publiée avec succès !
+            </div>
+        </form>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-title">
+                <h2>BookSwipe</h2>
+            </div>
+            <div class="footer-section">
+                <h3>À PROPOS DE BookSwipe</h3>
+                <ul>
+                    <li><a href="#">Qui sommes-nous ?</a></li>
+                    <li><a href="#">Nous rejoindre</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>INFORMATIONS LÉGALES</h3>
+                <ul>
+                    <li><a href="#">Conditions générales d'utilisation</a></li>
+                    <li><a href="#">Conditions générales de vente</a></li>
+                    <li><a href="#">Vos droits et obligations</a></li>
+                    <li><a href="#">Charte de bonne conduite</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>DES QUESTIONS ?</h3>
+                <ul>
+                    <li><a href="#">Aide</a></li>
+                    <li><a href="#">Statut de nos services</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>SUIVEZ-NOUS</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2025 BookSwipe. Tous droits réservés.</p>
+        </div>
+    </footer>
+    <script>
+        // Vérifier si l'utilisateur est connecté avant d'accéder à la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Veuillez vous connecter pour déposer une annonce');
+                window.location.href = 'Login.html';
+            }
+        });
+    </script>
+
+    <script src="Depose.js"></script>
+</body>
+</html>
