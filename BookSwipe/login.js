@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Redirection vers la page d'accueil après 2 secondes
         setTimeout(() => {
-            window.location.href = "BookSwipe.html";
+            window.location.href = "BookSwipe.html"; // Rediriger après 2 secondes
         }, 2000);
     });
     
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Redirection vers la page d'accueil après 1 seconde
             setTimeout(() => {
-                window.location.href = "BookSwipe.html";
+                window.location.href = "BookSwipe.html"; // Rediriger après 1 seconde
             }, 1000);
         } else {
             document.getElementById('login-message').textContent = "Email ou mot de passe incorrect";

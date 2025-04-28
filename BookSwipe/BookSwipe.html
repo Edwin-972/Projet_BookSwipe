@@ -18,11 +18,12 @@
             <i class="fas fa-search search-icon" aria-hidden="true"></i>
         </div>
         <div class="navbar-right">
-            <button class="nav-button" aria-label="Favoris">Favori</button>
+            <button class="nav-button" id="favoris-button" aria-label="Favoris">Favoris</button>
             <button class="nav-button" aria-label="Messages">Message</button>
-            <button class="nav-button" id="auth-button" aria-label="Connexion ou Inscription">Connexion/Inscription</button>
+            <button class="nav-button" id="auth-button" aria-label="Mon compte">Connexion/Inscription</button>
         </div>
     </nav>
+
     <main class="main-content">
         <h1>Bienvenue sur BookSwipe</h1>
         <p>Découvrez de nouveaux livres et partagez vos favoris !</p>
@@ -51,10 +52,11 @@
                 <button class="filter-button" id="apply-filters" aria-label="Appliquer les filtres">Appliquer les filtres</button>
             </aside>
             <section class="books-section" id="book-list">
-                <!--Cards des livres générées dynamiquement -->
+                <!-- Cards des livres générées dynamiquement -->
             </section>
         </div>
     </main>
+
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-title">
@@ -96,31 +98,35 @@
             <p>&copy; 2025 BookSwipe. Tous droits réservés.</p>
         </div>
     </footer>
+
     <script>
         // Mettre à jour le bouton de connexion dans la navbar
         document.addEventListener('DOMContentLoaded', function() {
             const authButton = document.getElementById('auth-button');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
             if (authButton) {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                 if (currentUser) {
-                    authButton.textContent = currentUser.name;
+                    authButton.textContent = "Mon compte"; // Afficher "Mon compte" pour un utilisateur connecté
                     authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
+                } else {
+                    authButton.textContent = "Connexion/Inscription"; // Afficher "Connexion/Inscription" si non connecté
+                    authButton.setAttribute('aria-label', "Connexion ou Inscription");
                 }
-                
+
                 authButton.addEventListener('click', function() {
                     if (currentUser) {
-                        // Option: Ajouter un menu déroulant pour le profil/déconnexion
-                        if (confirm(`Déconnecter ${currentUser.name} ?`)) {
-                            localStorage.removeItem('currentUser');
-                            window.location.reload();
-                        }
+                        // Si l'utilisateur est connecté, redirection vers la page du profil
+                        window.location.href = "profil.html"; // Page de profil de l'utilisateur
                     } else {
-                        window.location.href = "Login.html";
+                        // Sinon, redirection vers la page de login
+                        window.location.href = "login.html";
                     }
                 });
             }
         });
     </script>
+
     <script src="Script.js"></script>
 </body>
 </html>

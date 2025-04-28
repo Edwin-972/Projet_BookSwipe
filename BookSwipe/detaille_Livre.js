@@ -55,3 +55,97 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 });
+const addToFavoritesButton = document.getElementById('add-to-favorites');
+
+addToFavoritesButton.addEventListener('click', function() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        alert("Vous devez être connecté pour ajouter aux favoris.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    let favoris = JSON.parse(localStorage.getItem('favoris')) || [];
+    
+    const isAlreadyFavorite = favoris.some(fav => fav.id == book.id);
+    if (isAlreadyFavorite) {
+        alert("Ce livre est déjà dans vos favoris.");
+        return;
+    }
+
+    favoris.push(book);
+    localStorage.setItem('favoris', JSON.stringify(favoris));
+    alert("Livre ajouté à vos favoris !");
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const authButton = document.getElementById('auth-button');
+    const favorisButton = document.getElementById('favoris-button');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (authButton) {
+        if (currentUser) {
+            authButton.textContent = currentUser.name;
+            authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
+        } else {
+            authButton.textContent = "Connexion/Inscription";
+            authButton.setAttribute('aria-label', "Connexion ou Inscription");
+        }
+
+        authButton.addEventListener('click', function() {
+            if (currentUser) {
+                if (confirm(`Déconnecter ${currentUser.name} ?`)) {
+                    localStorage.removeItem('currentUser');
+                    window.location.reload();
+                }
+            } else {
+                window.location.href = "Login.html";
+            }
+        });
+    }
+
+    if (favorisButton) {
+        favorisButton.addEventListener('click', function() {
+            if (currentUser) {
+                window.location.href = "favoris.html"; // Redirection vers favoris si connecté
+            } else {
+                alert("Vous devez être connecté pour accéder à vos favoris.");
+                window.location.href = "Login.html"; // Redirection login
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const addToFavoritesButton = document.getElementById('add-to-favorites');
+
+    // Fonction pour ajouter aux favoris
+    addToFavoritesButton.addEventListener('click', function () {
+        const bookDetails = {
+            id: new Date().getTime(), // Création d'un ID unique basé sur l'heure
+            title: document.getElementById('book-title').innerText,
+            author: document.getElementById('book-author').innerText,
+            category: document.getElementById('book-category').innerText,
+            condition: document.getElementById('book-condition').innerText,
+            location: document.getElementById('book-location').innerText,
+            seller: document.getElementById('book-seller').innerText,
+            description: document.getElementById('description-text').innerText,
+            image: document.getElementById('book-image').src
+        };
+
+        // Récupérer les favoris existants ou initialiser un tableau vide
+        let favorites = JSON.parse(localStorage.getItem('favoris')) || [];
+
+        // Vérification pour éviter la duplication basée sur le titre et l'auteur
+        const isAlreadyFavorite = favorites.some(book => 
+            book.title === bookDetails.title && book.author === bookDetails.author);
+        
+        if (!isAlreadyFavorite) {
+            favorites.push(bookDetails);
+            localStorage.setItem('favoris', JSON.stringify(favorites));
+            alert('Livre ajouté aux favoris!');
+        } else {
+            alert('Ce livre est déjà dans vos favoris.');
+        }
+    });
+});

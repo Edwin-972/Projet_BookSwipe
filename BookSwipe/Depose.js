@@ -34,15 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateDropZonePreview(dropZone, file) {
-        if (file.size > 5 * 1024 * 1024) {
-            dropZone.innerHTML = `
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Fichier trop volumineux (max 5MB)</p>
-                <p class="small">Veuillez choisir une image plus petite</p>
-            `;
-            return;
-        }
-
         const reader = new FileReader();
         reader.onload = function(e) {
             dropZone.innerHTML = `
@@ -63,17 +54,14 @@ document.addEventListener('DOMContentLoaded', function() {
         annonceForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             
-            // Elements UI
             const submitButton = annonceForm.querySelector('.submit-button');
             const buttonText = submitButton.querySelector('.button-text');
             const loadingElement = submitButton.querySelector('.loading');
             const confirmationMessage = document.querySelector('.confirmation-message');
             
-            // Afficher le loader
             buttonText.style.display = 'none';
             loadingElement.style.display = 'flex';
             
-            // Récupération des valeurs
             const formData = {
                 title: document.getElementById('title').value,
                 author: document.getElementById('author').value,
@@ -84,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 imageUpload: document.getElementById('image-upload')
             };
 
-            // Validation
             const requiredFields = [
                 { value: formData.title, name: 'Titre du livre' },
                 { value: formData.author, name: 'Auteur' },
@@ -102,49 +89,103 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Traitement de l'image
-            let imageBase64 = null;
-            if (formData.imageUpload.files[0]) {
-                try {
+            try {
+                let imageBase64 = null;
+                if (formData.imageUpload.files[0]) {
+                    // Pas de limite de taille ici, on enregistre directement l'image
                     imageBase64 = await readFileAsDataURL(formData.imageUpload.files[0]);
-                } catch (error) {
-                    console.error("Erreur de lecture de l'image:", error);
                 }
+
+                const newBook = {
+                    id: Date.now(),
+                    title: formData.title,
+                    author: formData.author,
+                    category: formData.category,
+                    condition: formData.condition,
+                    location: formData.location,
+                    description: formData.description,
+                    image: imageBase64,
+                    createdAt: new Date().toISOString()
+                };
+
+                let books = JSON.parse(localStorage.getItem('books')) || [];
+                books.push(newBook);
+                localStorage.setItem('books', JSON.stringify(books));
+
+                confirmationMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    window.location.href = 'BookSwipe.html';
+                }, 2000);
+            } catch (error) {
+                console.error("Erreur lors de la soumission:", error);
+                alert(`Une erreur est survenue: ${error.message}`);
+                buttonText.style.display = 'inline';
+                loadingElement.style.display = 'none';
             }
-
-            // Création du livre
-            const newBook = {
-                id: Date.now(),
-                title: formData.title,
-                author: formData.author,
-                category: formData.category,
-                condition: formData.condition,
-                location: formData.location,
-                description: formData.description,
-                image: imageBase64
-            };
-
-            // Sauvegarde
-            let books = JSON.parse(localStorage.getItem('books')) || [];
-            books.push(newBook);
-            localStorage.setItem('books', JSON.stringify(books));
-
-            // Affichage confirmation
-            confirmationMessage.style.display = 'block';
-            
-            // Redirection
-            setTimeout(() => {
-                window.location.href = 'BookSwipe.html';
-            }, 2000);
         });
     }
 
-    function readFileAsDataURL(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
+    // Gestion de l'authentification
+   // Mettre à jour le bouton de connexion dans la navbar
+   document.addEventListener('DOMContentLoaded', function() {
+    const authButton = document.getElementById('auth-button');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (authButton) {
+        if (currentUser) {
+            authButton.textContent = "Mon compte"; // Afficher "Mon compte" pour un utilisateur connecté
+            authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
+        } else {
+            authButton.textContent = "Connexion/Inscription"; // Afficher "Connexion/Inscription" si non connecté
+            authButton.setAttribute('aria-label', "Connexion ou Inscription");
+        }
+
+        authButton.addEventListener('click', function() {
+            if (currentUser) {
+                // Si l'utilisateur est connecté, redirection vers la page du profil
+                window.location.href = "profil.html"; // Page de profil de l'utilisateur
+            } else {
+                // Sinon, redirection vers la page de login
+                window.location.href = "login.html";
+            }
         });
     }
 });
+});
+
+// Mettre à jour le bouton de connexion dans la navbar
+document.addEventListener('DOMContentLoaded', function() {
+    const authButton = document.getElementById('auth-button');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (authButton) {
+        if (currentUser) {
+            authButton.textContent = "Mon compte"; // Afficher "Mon compte" pour un utilisateur connecté
+            authButton.textContent = "Mon compte"; // Afficher "Mon compte" pour un utilisateur connecté
+        } else {
+            authButton.textContent = "Connexion/Inscription"; // Afficher "Connexion/Inscription" si non connecté
+            authButton.setAttribute('aria-label', "Connexion ou Inscription");
+        }
+
+        authButton.addEventListener('click', function() {
+            if (currentUser) {
+                // Si l'utilisateur est connecté, redirection vers la page du profil
+                window.location.href = "profil.html"; // Page de profil de l'utilisateur
+            } else {
+                // Sinon, redirection vers la page de login
+                window.location.href = "login.html";
+            }
+        });
+    }
+});
+
+// Fonction pour lire l'image et la convertir en base64
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+    });
+}
