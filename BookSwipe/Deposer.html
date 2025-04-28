@@ -144,7 +144,7 @@
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
       if (!currentUser) {
         alert('Veuillez vous connecter pour déposer une annonce');
-        window.location.href = 'Login.html';
+        window.location.href = 'login.html';
       }
 
       const authButton = document.getElementById('auth-button');
@@ -161,7 +161,7 @@
               window.location.reload();
             }
           } else {
-            window.location.href = "Login.html";
+            window.location.href = "login.html";
           }
         });
       }

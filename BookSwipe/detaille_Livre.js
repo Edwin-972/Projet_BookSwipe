@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.reload();
                 }
             } else {
-                window.location.href = "Login.html";
+                window.location.href = "login.html";
             }
         });
     }
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = "favoris.html"; // Redirection vers favoris si connecté
             } else {
                 alert("Vous devez être connecté pour accéder à vos favoris.");
-                window.location.href = "Login.html"; // Redirection login
+                window.location.href = "login.html"; // Redirection login
             }
         });
     }

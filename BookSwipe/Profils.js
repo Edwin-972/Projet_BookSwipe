@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateAuthButton();
         
         // Rediriger vers la page de connexion ou d'accueil
-        window.location.href = "connexion.html"; // Page de connexion après déconnexion
+        window.location.href = "BookSwipe.html"; // Page de connexion après déconnexion
     });
 
     // Mettre à jour le bouton de connexion dans la navbar
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('user-email').textContent = currentUser.email;
     } else {
         // Si aucun utilisateur n'est connecté, rediriger vers la page de connexion
-        window.location.href = "connexion.html";
+        window.location.href = "BookSwipe.html";
     }
 
     // Gestion de la déconnexion

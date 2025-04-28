@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (!currentUser) {
                 alert('Veuillez vous connecter pour déposer une annonce');
-                window.location.href = 'Login.html';
+                window.location.href = 'login.html';
                 return;
             }
 
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.reload();
                 }
             } else {
-                window.location.href = "Login.html";
+                window.location.href = "login.html";
             }
         });
     }
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = "favoris.html"; // Redirection vers favoris si connecté
             } else {
                 alert("Vous devez être connecté pour accéder à vos favoris.");
-                window.location.href = "Login.html"; // Redirection login
+                window.location.href = "login.html"; // Redirection login
             }
         });
     }
@@ -231,13 +231,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('user-email').textContent = currentUser.email;
     } else {
         // Si aucun utilisateur n'est connecté, rediriger vers la page de connexion
-        window.location.href = "connexion.html";
+        window.location.href = "BookSwipe.html";
     }
 
     // Gestion de la déconnexion
     logoutButton.addEventListener('click', function() {
         localStorage.removeItem('currentUser');
-        window.location.href = "connexion.html"; // Redirection vers la page de connexion
+        window.location.href = "BookSwipe.html"; // Redirection vers la page de connexion
     });
 
     // Gestion du changement de mot de passe
