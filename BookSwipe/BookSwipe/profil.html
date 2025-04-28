@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte | BookSwipe</title>
+    <link rel="stylesheet" href="../Style_Css/Style.css"> 
+    <link rel="stylesheet" href="../Style_Css/profils.css">
+</head>
+<body>
+    <!-- Header -->
+
+    <div id="header-placeholder"></div>   
+    <script src="../js/header.js"></script>
+    
+
+    <!-- Section centrale de "Mon Compte" -->
+    <div class="account-container">
+        <h1>Mon Profil</h1>
+        <div class="profile-info">
+            <p><strong>Nom :</strong> <span id="user-name"></span></p>
+            <p><strong>Email :</strong> <span id="user-email"></span></p>
+        </div>
+
+        <!-- Formulaire de changement de mot de passe -->
+        <div class="password-change">
+            <h2>Changer le mot de passe</h2>
+            <form id="password-change-form">
+                <div>
+                    <label for="current-password">Mot de passe actuel :</label>
+                    <input type="password" id="current-password" name="current-password" required>
+                </div>
+                <div>
+                    <label for="new-password">Nouveau mot de passe :</label>
+                    <input type="password" id="new-password" name="new-password" required>
+                </div>
+                <div>
+                    <label for="confirm-new-password">Confirmer le nouveau mot de passe :</label>
+                    <input type="password" id="confirm-new-password" name="confirm-new-password" required>
+                </div>
+                <button type="submit" class="update-password-button">Mettre à jour le mot de passe</button>
+            </form>
+        </div>
+
+        <button class="logout-button">Se déconnecter</button>
+    </div>
+
+
+    <!-- Script pour injecter le footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../Js/footer.js"></script>
+
+    <script src="../Js/Script.js"></script> <!-- Le fichier contenant le script -->
+    <script src="../Js/Profils.js"></script> <!-- Le fichier contenant le script -->
+
+</body>
+</html>

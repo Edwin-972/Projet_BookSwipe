@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookSwipe</title>
+    <link rel="stylesheet" href="../Style_Css/Style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+                <!-- Header -->
+
+    <div id="header-placeholder"></div>   
+    <script src="../js/header.js"></script>
+    
+
+    <main class="main-content">
+        <h1>Bienvenue sur BookSwipe</h1>
+        <p>Découvrez de nouveaux livres et partagez vos favoris !</p>
+        <div class="content-wrapper">
+            <aside class="filters-section">
+                <h2>Filtres</h2>
+                <div class="filter-group">
+                    <h3>Catégorie</h3>
+                    <select class="filter-select" id="category-filter" aria-label="Filtrer par catégorie">
+                        <option value="all">Toutes les catégories</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="non-fiction">Non-Fiction</option>
+                        <option value="science">Science</option>
+                        <option value="histoire">Histoire</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <h3>État du livre</h3>
+                    <label><input type="checkbox" name="condition" value="new" aria-label="Neuf"> Neuf</label>
+                    <label><input type="checkbox" name="condition" value="used" aria-label="Occasion"> Occasion</label>
+                </div>
+                <div class="filter-group">
+                    <h3>Localisation</h3>
+                    <input type="text" placeholder="Entrez une ville" class="filter-input" id="location-filter" aria-label="Filtrer par localisation">
+                </div>
+                <button class="filter-button" id="apply-filters" aria-label="Appliquer les filtres">Appliquer les filtres</button>
+            </aside>
+            <section class="books-section" id="book-list">
+                <!-- Cards des livres générées dynamiquement -->
+            </section>
+        </div>
+    </main>
+    
+        <!-- Script pour injecter le footer -->
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../Js/footer.js"></script>
+    <script>
+    
+
+        
+    </script>
+    
+
+    <script src="../Js/Script.js"></script>
+</body>
+
+</html>

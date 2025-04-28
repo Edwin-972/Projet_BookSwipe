@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détails du livre - BookSwipe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Style_Css/Detaille_livre.css">
+</head>
+
+<body>
+          <!-- Header -->
+
+  <div id="header-placeholder"></div>   
+  <script src="../js/header.js"></script>
+    
+
+  <main class="main-content">
+    <div id="book-details-container">
+      <div class="book-main">
+        <div class="book-image-container">
+          <img id="book-image" src="https://via.placeholder.com/300x450" alt="Couverture du livre" class="book-image">
+        </div>
+        <div class="book-info">
+          <h1 id="book-title">Titre du livre</h1>
+          <div class="book-meta">
+            <p><i class="fas fa-user-edit"></i> <span id="book-author">Auteur :</span></p>
+            <p><i class="fas fa-book"></i> <span id="book-category">Catégorie :</span></p>
+            <p><i class="fas fa-check-circle"></i> <span id="book-condition">État :</span></p>
+            <p><i class="fas fa-map-marker-alt"></i> <span id="book-location">Localisation :</span></p>
+            <p><i class="fas fa-user"></i> <span id="book-seller">Vendeur :</span></p>
+          </div>
+          <button id="add-to-favorites" class="favori-button" aria-label="Ajouter ce livre aux favoris">Ajouter aux Favoris</button>
+
+          <div class="book-description">
+            <h2>Description</h2>
+            <p id="description-text">Description du livre...</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="contact-button" aria-label="Contacter le vendeur"><i class="fas fa-paper-plane"></i> Contacter le vendeur</button>
+    </div>
+  </main>
+
+  <!-- Script pour injecter le footer -->
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../Js/footer.js"></script>
+
+  <script src="../Js/detaille_Livre.js"></script>
+
+</body>
+</html>
