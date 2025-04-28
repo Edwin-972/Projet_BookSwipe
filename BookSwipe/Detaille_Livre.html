@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détails du livre - BookSwipe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Style_Css/Detaille_livre.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <a href="BookSwipe.html" class="logo" aria-label="Retour à l'accueil BookSwipe">BookSwipe</a>
+      <a href="Deposer.html" class="nav-button" aria-label="Déposer une annonce">Déposer une annonce</a>
+    </div>
+    <div class="navbar-center">
+      <input type="text" placeholder="Rechercher..." class="search-bar" aria-label="Rechercher des livres">
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
+    </div>
+    <div class="navbar-right">
+      <button class="nav-button" id="favoris-button" aria-label="Favoris">Favoris</button>
+      <button class="nav-button" aria-label="Voir vos messages"><i class="far fa-envelope"></i> Messages</button>
+      <button class="nav-button" id="auth-button" aria-label="Connexion ou Inscription"><i class="far fa-user"></i> Connexion/Inscription</button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div id="book-details-container">
+      <div class="book-main">
+        <div class="book-image-container">
+          <img id="book-image" src="https://via.placeholder.com/300x450" alt="Couverture du livre" class="book-image">
+        </div>
+        <div class="book-info">
+          <h1 id="book-title">Titre du livre</h1>
+          <div class="book-meta">
+            <p><i class="fas fa-user-edit"></i> <span id="book-author">Auteur :</span></p>
+            <p><i class="fas fa-book"></i> <span id="book-category">Catégorie :</span></p>
+            <p><i class="fas fa-check-circle"></i> <span id="book-condition">État :</span></p>
+            <p><i class="fas fa-map-marker-alt"></i> <span id="book-location">Localisation :</span></p>
+            <p><i class="fas fa-user"></i> <span id="book-seller">Vendeur :</span></p>
+          </div>
+          <button id="add-to-favorites" class="favori-button" aria-label="Ajouter ce livre aux favoris">Ajouter aux Favoris</button>
+
+          <div class="book-description">
+            <h2>Description</h2>
+            <p id="description-text">Description du livre...</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="contact-button" aria-label="Contacter le vendeur"><i class="fas fa-paper-plane"></i> Contacter le vendeur</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-title">
+        <h2>BookSwipe</h2>
+      </div>
+      <div class="footer-section">
+        <h3>À PROPOS DE BookSwipe</h3>
+        <ul>
+          <li><a href="#">Qui sommes-nous ?</a></li>
+          <li><a href="#">Nous rejoindre</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>INFORMATIONS LÉGALES</h3>
+        <ul>
+          <li><a href="#">Conditions générales d'utilisation</a></li>
+          <li><a href="#">Conditions générales de vente</a></li>
+          <li><a href="#">Charte de bonne conduite</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>DES QUESTIONS ?</h3>
+        <ul>
+          <li><a href="#">Aide</a></li>
+          <li><a href="#">Statut de nos services</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>SUIVEZ-NOUS</h3>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <p>&copy; 2025 BookSwipe. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="../Js/detaille_Livre.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const addToFavoritesButton = document.getElementById('add-to-favorites');
+
+      // Ajouter un ID unique pour chaque livre
+      const bookId = "book-" + Date.now(); // Utilisation du timestamp pour générer un ID unique
+
+      // Fonction pour ajouter aux favoris
+      addToFavoritesButton.addEventListener('click', function () {
+        const bookDetails = {
+          id: bookId,
+          title: document.getElementById('book-title').innerText,
+          author: document.getElementById('book-author').innerText,
+          category: document.getElementById('book-category').innerText,
+          condition: document.getElementById('book-condition').innerText,
+          location: document.getElementById('book-location').innerText,
+          seller: document.getElementById('book-seller').innerText,
+          description: document.getElementById('description-text').innerText,
+          image: document.getElementById('book-image').src
+        };
+
+        // Récupérer les favoris existants ou initialiser un tableau vide
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        // Ajouter le livre aux favoris (s'il n'est pas déjà dans la liste)
+        const isAlreadyFavorite = favorites.some(book => book.id === bookDetails.id);
+        if (!isAlreadyFavorite) {
+          favorites.push(bookDetails);
+          localStorage.setItem('favorites', JSON.stringify(favorites));
+          alert('Livre ajouté aux favoris!');
+        } else {
+          alert('Ce livre est déjà dans vos favoris.');
+        }
+      });
+    });
+    
+  </script>
+</body>
+</html>
