@@ -13,3 +13,75 @@
         <button class="nav-button" id="auth-button" aria-label="Mon compte">Connexion/Inscription</button>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('.search-bar');
+
+        // Ajouter un gestionnaire d'événements pour la recherche
+        if (searchInput) {
+            searchInput.addEventListener('input', function (e) {
+                const query = e.target.value.toLowerCase();
+                const books = document.querySelectorAll('.book-card');
+
+                books.forEach(book => {
+                    const title = book.querySelector('.book-title')?.textContent.toLowerCase() || "";
+                    const author = book.querySelector('.book-author')?.textContent.toLowerCase() || "";
+                    book.style.display = title.includes(query) || author.includes(query) ? '' : 'none';
+                });
+            });
+        }
+
+        // Initialiser les boutons
+        initializeHeader();
+    });
+
+    function initializeHeader() {
+        const authButton = document.getElementById('auth-button');
+        const favorisButton = document.getElementById('favoris-button');
+        const messagesButton = document.getElementById('messages-button');
+        const token = localStorage.getItem('token');
+        const userEmail = localStorage.getItem('userEmail');
+
+        // === Auth Button ===
+        if (authButton) {
+            if (token && userEmail) {
+                authButton.textContent = "Mon Compte";
+                authButton.setAttribute('aria-label', `Profil de ${userEmail}`);
+                authButton.addEventListener('click', () => {
+                    window.location.href = "profil.html";
+                });
+            } else {
+                authButton.textContent = "Connexion / Inscription";
+                authButton.setAttribute('aria-label', "Connexion ou Inscription");
+                authButton.addEventListener('click', () => {
+                    window.location.href = "login.html";
+                });
+            }
+        }
+
+        // === Favoris Button ===
+        if (favorisButton) {
+            favorisButton.addEventListener('click', () => {
+                if (token && userEmail) {
+                    window.location.href = "favoris.html";
+                } else {
+                    alert("Vous devez être connecté pour accéder à vos favoris.");
+                    window.location.href = "login.html";
+                }
+            });
+        }
+
+        // === Messages Button ===
+        if (messagesButton) {
+            messagesButton.addEventListener('click', () => {
+                if (token && userEmail) {
+                    window.location.href = "messages.html";
+                } else {
+                    alert("Vous devez être connecté pour accéder à vos messages.");
+                    window.location.href = "login.html";
+                }
+            });
+        }
+    }
+</script>
