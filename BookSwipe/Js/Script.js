@@ -1,12 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
     let books = JSON.parse(localStorage.getItem('books')) || [];
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-    // Fonction pour afficher les livres
+    function updateAuthButton() {
+        const authButton = document.getElementById('auth-button');
+        if (authButton) {
+            if (currentUser) {
+                authButton.textContent = "Mon Compte";
+                authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
+                authButton.addEventListener('click', function() {
+                    window.location.href = "profil.html";
+                });
+            } else {
+                authButton.textContent = "Connexion/Inscription";
+                authButton.setAttribute('aria-label', "Connexion ou Inscription");
+                authButton.addEventListener('click', function() {
+                    window.location.href = "login.html";
+                });
+            }
+        }
+    }
+
     function displayBooks(filteredBooks) {
         const booksSection = document.querySelector(".books-section");
         if (booksSection) {
             booksSection.innerHTML = "";
-
             if (filteredBooks.length === 0) {
                 booksSection.innerHTML = "<p>Aucun livre trouvé.</p>";
             } else {
@@ -24,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     booksSection.insertAdjacentHTML("beforeend", bookCard);
                 });
 
-                // Gestion de la redirection vers la page de détail
                 document.querySelectorAll('.book-card').forEach(card => {
                     card.addEventListener('click', function() {
                         const bookId = this.getAttribute('data-id');
@@ -35,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Fonction pour appliquer les filtres
     function applyFilters() {
         const category = document.getElementById("category-filter").value;
         const location = document.getElementById("location-filter").value.toLowerCase();
@@ -56,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function () {
         displayBooks(filteredBooks);
     }
 
-    // Fonction pour filtrer les livres par recherche
     function filterBooksBySearch(query) {
         const filteredBooks = books.filter(book =>
             book.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -66,13 +81,11 @@ document.addEventListener('DOMContentLoaded', function () {
         displayBooks(filteredBooks);
     }
 
-    // Gestion des filtres
     const applyFiltersButton = document.getElementById("apply-filters");
     if (applyFiltersButton) {
         applyFiltersButton.addEventListener("click", applyFilters);
     }
 
-    // Recherche en temps réel
     const searchBar = document.querySelector(".search-bar");
     if (searchBar) {
         searchBar.addEventListener("input", (event) => {
@@ -81,14 +94,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Gestion du formulaire d'ajout d'une annonce
     const annonceForm = document.getElementById("annonce-form");
     if (annonceForm) {
         annonceForm.addEventListener("submit", (event) => {
             event.preventDefault();
 
-            // Vérifier si l'utilisateur est connecté
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (!currentUser) {
                 alert('Veuillez vous connecter pour déposer une annonce');
                 window.location.href = 'login.html';
@@ -116,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     description,
                     exchange,
                     exchangeImage,
-                    seller: currentUser.name, // Utiliser le nom de l'utilisateur connecté
+                    seller: currentUser.name,
                     image: mainImage
                 };
                 books.push(newBook);
@@ -146,167 +156,156 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Affichage des livres
     displayBooks(books);
-
-    // Mettre à jour le bouton de connexion dans la navbar si l'utilisateur est connecté
     updateAuthButton();
 
-    // Fonction de mise à jour du bouton de connexion
-    function updateAuthButton() {
-        const authButton = document.getElementById('auth-button');
-        if (authButton) {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser) {
-                authButton.textContent = "Mon Compte";
-                authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
-
-              
-
-                authButton.parentNode.insertBefore(logoutButton, authButton.nextSibling);
-            }
-        }
-    }
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const authButton = document.getElementById('auth-button');
     const favorisButton = document.getElementById('favoris-button');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-    if (authButton) {
-        if (currentUser) {
-            authButton.textContent = currentUser.name;
-            authButton.textContent = "Mon compte"; // Afficher "Mon compte" pour un utilisateur connecté
-        } else {
-            authButton.textContent = "Connexion/Inscription";
-            authButton.setAttribute('aria-label', "Connexion ou Inscription");
-        }
-
-        authButton.addEventListener('click', function() {
-            if (currentUser) {
-                if (confirm(`Déconnecter ${currentUser.name} ?`)) {
-                    localStorage.removeItem('currentUser');
-                    window.location.reload();
-                }
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-    }
-
     if (favorisButton) {
         favorisButton.addEventListener('click', function() {
             if (currentUser) {
-                window.location.href = "favoris.html"; // Redirection vers favoris si connecté
+                window.location.href = "favoris.html";
             } else {
                 alert("Vous devez être connecté pour accéder à vos favoris.");
-                window.location.href = "login.html"; // Redirection login
-            }
-        });
-    }
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-    // Si un utilisateur est connecté, afficher ses informations
-    if (currentUser) {
-        document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-email').textContent = currentUser.email;
-        document.getElementById('user-seller').textContent = currentUser.name; // Nom du vendeur
-        document.getElementById('user-location').textContent = currentUser.location; // Ville de l'utilisateur
-    }
-
-   
-    
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const logoutButton = document.querySelector('.logout-button');
-    const passwordChangeForm = document.getElementById('password-change-form');
-    
-    // Afficher les informations de l'utilisateur
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-email').textContent = currentUser.email;
-    } else {
-        // Si aucun utilisateur n'est connecté, rediriger vers la page de connexion
-        window.location.href = "BookSwipe.html";
-    }
-
-    // Gestion de la déconnexion
-    logoutButton.addEventListener('click', function() {
-        localStorage.removeItem('currentUser');
-        window.location.href = "BookSwipe.html"; // Redirection vers la page de connexion
-    });
-
-    // Gestion du changement de mot de passe
-    passwordChangeForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const currentPassword = document.getElementById('current-password').value;
-        const newPassword = document.getElementById('new-password').value;
-        const confirmNewPassword = document.getElementById('confirm-new-password').value;
-        
-        // Vérifier si le mot de passe actuel est correct
-        if (currentPassword !== currentUser.password) {
-            alert("Le mot de passe actuel est incorrect");
-            return;
-        }
-
-        // Vérifier si les nouveaux mots de passe correspondent
-        if (newPassword !== confirmNewPassword) {
-            alert("Les mots de passe ne correspondent pas");
-            return;
-        }
-
-        // Vérifier la longueur du nouveau mot de passe
-        if (newPassword.length < 6) {
-            alert("Le nouveau mot de passe doit contenir au moins 6 caractères");
-            return;
-        }
-
-        // Mettre à jour le mot de passe de l'utilisateur dans le localStorage
-        currentUser.password = newPassword;
-
-        // Mettre à jour tous les utilisateurs dans le localStorage
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(user => user.email === currentUser.email);
-        
-        if (userIndex !== -1) {
-            users[userIndex].password = newPassword;
-            localStorage.setItem('users', JSON.stringify(users));
-        }
-
-        // Mettre à jour le currentUser dans le localStorage
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-        alert("Mot de passe mis à jour avec succès !");
-    });
-});
-
- // Mettre à jour le bouton de connexion dans la navbar
- document.addEventListener('DOMContentLoaded', function() {
-    const authButton = document.getElementById('auth-button');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-    if (authButton) {
-        if (currentUser) {
-            authButton.textContent = "Mon compte"; // Afficher "Mon compte" pour un utilisateur connecté
-            authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
-        } else {
-            authButton.textContent = "Connexion/Inscription"; // Afficher "Connexion/Inscription" si non connecté
-            authButton.setAttribute('aria-label', "Connexion ou Inscription");
-        }
-
-        authButton.addEventListener('click', function() {
-            if (currentUser) {
-                // Si l'utilisateur est connecté, redirection vers la page du profil
-                window.location.href = "profil.html"; // Page de profil de l'utilisateur
-            } else {
-                // Sinon, redirection vers la page de login
                 window.location.href = "login.html";
             }
         });
     }
+
+    if (currentUser) {
+        document.getElementById('user-name').textContent = currentUser.name;
+        document.getElementById('user-email').textContent = currentUser.email;
+        document.getElementById('user-seller').textContent = currentUser.name;
+        document.getElementById('user-location').textContent = currentUser.location;
+    }
+
+    const logoutButton = document.querySelector('.logout-button');
+    const passwordChangeForm = document.getElementById('password-change-form');
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = "BookSwipe.html";
+        });
+    }
+
+    if (passwordChangeForm) {
+        passwordChangeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+            if (currentPassword !== currentUser.password) {
+                alert("Le mot de passe actuel est incorrect");
+                return;
+            }
+
+            if (newPassword !== confirmNewPassword) {
+                alert("Les mots de passe ne correspondent pas");
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert("Le nouveau mot de passe doit contenir au moins 6 caractères");
+                return;
+            }
+
+            currentUser.password = newPassword;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(user => user.email === currentUser.email);
+
+            if (userIndex !== -1) {
+                users[userIndex].password = newPassword;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            alert("Mot de passe mis à jour avec succès !");
+        });
+    }
 });
+// Fonction pour charger les livres depuis l'API
+async function fetchAndDisplayBooks() {
+    try {
+        const response = await fetch('http://localhost:3001/api/annonces_livres');
+        
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        
+        const books = await response.json();
+        
+        // Afficher les livres dans le conteneur approprié
+        const booksContainer = document.getElementById('books-container');
+        
+        // S'assurer que le conteneur existe
+        if (!booksContainer) {
+            console.error('Le conteneur de livres #books-container n\'a pas été trouvé');
+            return;
+        }
+        
+        // Vider le conteneur actuel
+        booksContainer.innerHTML = '';
+        
+        // Ajouter chaque livre au conteneur
+        if (books.length === 0) {
+            booksContainer.innerHTML = '<p>Aucun livre disponible pour le moment.</p>';
+        } else {
+            books.forEach(book => {
+                const bookCard = createBookCard(book);
+                booksContainer.appendChild(bookCard);
+            });
+        }
+        
+        console.log('Livres chargés avec succès:', books.length);
+    } catch (error) {
+        console.error('Erreur lors du chargement des livres:', error);
+        const booksContainer = document.getElementById('books-container');
+        if (booksContainer) {
+            booksContainer.innerHTML = '<p>Erreur lors du chargement des livres. Veuillez réessayer.</p>';
+        }
+    }
+}
+
+// Fonction pour créer une carte de livre
+function createBookCard(book) {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.dataset.id = book.id;
+    
+    // Création du contenu de la carte
+    card.innerHTML = `
+        <div class="book-image">
+            ${book.image_url ? `<img src="${book.image_url}" alt="${book.titre}">` : '<div class="no-image">Pas d\'image</div>'}
+        </div>
+        <div class="book-info">
+            <h3 class="book-title">${book.titre}</h3>
+            <p class="book-author">${book.auteur}</p>
+            <p class="book-category">${book.categorie}</p>
+            <p class="book-status">${book.statut}</p>
+            <p class="book-location">${book.ville}</p>
+            <p class="book-date">Ajouté le ${new Date(book.date_ajout).toLocaleDateString()}</p>
+        </div>
+    `;
+    
+    // Ajouter un gestionnaire d'événements pour afficher les détails du livre
+    card.addEventListener('click', () => {
+        // Rediriger vers la page de détails du livre ou afficher un modal
+        window.location.href = `details-livre.html?id=${book.id}`;
+    });
+    
+    return card;
+}
+
+// Appeler cette fonction lorsque la page est chargée
+document.addEventListener('DOMContentLoaded', function() {
+    // Chargement initial des livres
+    fetchAndDisplayBooks();
+    
+    // Mettre à jour l'interface en fonction de l'état de connexion
+    updateAuthButton();
+});
+

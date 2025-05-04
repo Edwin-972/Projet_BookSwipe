@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     fetch('../Contenu/header.html')
         .then(response => response.text())
         .then(data => {
@@ -14,55 +14,64 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function initializeHeader() {
     const authButton = document.getElementById('auth-button');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const favorisButton = document.getElementById('favoris-button');
+    const messagesButton = document.getElementById('messages-button');
+    const token = localStorage.getItem('token');
+    const userEmail = localStorage.getItem('userEmail');
 
+    // === Auth Button ===
     if (authButton) {
-        if (currentUser) {
-            authButton.textContent = "Mon compte";
-            authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
+        if (token && userEmail) {
+            // Changer le texte et l'action du bouton si l'utilisateur est connecté
+            authButton.textContent = "Mon Compte";
+            authButton.setAttribute('aria-label', `Profil de ${userEmail}`);
+            authButton.addEventListener('click', () => {
+                window.location.href = "profil.html"; // Rediriger vers le profil
+            });
         } else {
-            authButton.textContent = "Connexion/Inscription";
+            // Si l'utilisateur n'est pas connecté, garder l'option de se connecter
+            authButton.textContent = "Connexion / Inscription";
             authButton.setAttribute('aria-label', "Connexion ou Inscription");
+            authButton.addEventListener('click', () => {
+                window.location.href = "login.html"; // Rediriger vers la page de connexion
+            });
         }
+    }
 
-        authButton.addEventListener('click', function() {
-            if (currentUser) {
-                window.location.href = "profil.html";
+    // === Favoris Button ===
+    if (favorisButton) {
+        favorisButton.addEventListener('click', () => {
+            if (token && userEmail) {
+                window.location.href = "favoris.html"; // Rediriger vers la page des favoris
             } else {
-                window.location.href = "login.html";
+                alert("Vous devez être connecté pour accéder à vos favoris.");
+                window.location.href = "login.html"; // Rediriger vers la page de connexion
             }
         });
     }
 
-    const favorisButton = document.getElementById('favoris-button');
-    const messagesButton = document.getElementById('messages-button');
-
-    if (favorisButton) {
-        favorisButton.addEventListener('click', () => {
-            window.location.href = "favoris.html"; // Page Favoris
-        });
-    }
-
+    // === Messages Button ===
     if (messagesButton) {
         messagesButton.addEventListener('click', () => {
-            window.location.href = "messages.html"; // Page Messages
+            if (token && userEmail) {
+                window.location.href = "messages.html"; // Rediriger vers la page des messages
+            } else {
+                alert("Vous devez être connecté pour accéder à vos messages.");
+                window.location.href = "login.html"; // Rediriger vers la page de connexion
+            }
         });
     }
 
-    // === 🔥 Correction pour la barre de recherche ===
+    // === Recherche de livres ===
     const searchBar = document.querySelector('.search-bar');
     if (searchBar) {
-        searchBar.addEventListener('input', function(e) {
+        searchBar.addEventListener('input', function (e) {
             const query = e.target.value.toLowerCase();
-            const books = document.querySelectorAll('.book-card'); // Assure-toi que tes livres ont la classe 'book-card'
+            const books = document.querySelectorAll('.book-card');
 
             books.forEach(book => {
-                const title = book.querySelector('.book-title').textContent.toLowerCase();
-                if (title.includes(query)) {
-                    book.style.display = '';
-                } else {
-                    book.style.display = 'none';
-                }
+                const title = book.querySelector('.book-title')?.textContent.toLowerCase() || "";
+                book.style.display = title.includes(query) ? '' : 'none';
             });
         });
     }

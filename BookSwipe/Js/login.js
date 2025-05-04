@@ -1,110 +1,184 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Gestion des onglets
+document.addEventListener('DOMContentLoaded', function () {
     const loginTab = document.getElementById('login-tab');
     const registerTab = document.getElementById('register-tab');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
 
-    loginTab.addEventListener('click', function() {
+    loginTab.addEventListener('click', function () {
         loginTab.classList.add('active');
         registerTab.classList.remove('active');
         loginForm.classList.add('active');
         registerForm.classList.remove('active');
     });
 
-    registerTab.addEventListener('click', function() {
+    registerTab.addEventListener('click', function () {
         registerTab.classList.add('active');
         loginTab.classList.remove('active');
         registerForm.classList.add('active');
         loginForm.classList.remove('active');
     });
 
-    // Gestion de l'inscription
-    const registerFormElement = document.getElementById('register-form');
-    registerFormElement.addEventListener('submit', function(e) {
+    // === INSCRIPTION ===
+    registerForm.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
         const name = document.getElementById('register-name').value;
-        const email = document.getElementById('register-email').value;
+        const email = document.getElementById('register-email').value.toLowerCase(); // minuscule
         const password = document.getElementById('register-password').value;
         const confirmPassword = document.getElementById('register-confirm').value;
-        
-        // Validation
+
+        const messageEl = document.getElementById('register-message');
+        messageEl.textContent = '';
+
         if (password !== confirmPassword) {
-            document.getElementById('register-message').textContent = "Les mots de passe ne correspondent pas";
+            messageEl.textContent = "Les mots de passe ne correspondent pas";
             return;
         }
-        
+
         if (password.length < 6) {
-            document.getElementById('register-message').textContent = "Le mot de passe doit contenir au moins 6 caractères";
+            messageEl.textContent = "Le mot de passe doit contenir au moins 6 caractères";
             return;
         }
-        
-        // Vérifier si l'utilisateur existe déjà
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userExists = users.some(user => user.email === email);
-        
-        if (userExists) {
-            document.getElementById('register-message').textContent = "Un compte avec cet email existe déjà";
-            return;
+
+        try {
+            const response = await fetch('http://localhost:3001/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nom: name, email, mot_de_passe: password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageEl.textContent = "Inscription réussie! Redirection...";
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2000);
+            } else {
+                messageEl.textContent = data.error || "Erreur lors de l'inscription";
+            }
+        } catch (err) {
+            console.error(err);
+            messageEl.textContent = "Erreur réseau";
         }
-        
-        // Créer le nouvel utilisateur
-        const newUser = {
-            id: Date.now(),
-            name,
-            email,
-            password // Note: En production, il faudrait hasher le mot de passe
-        };
-        
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-        
-        // Connecter l'utilisateur directement après l'inscription
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
-        document.getElementById('register-message').textContent = "Inscription réussie! Redirection...";
-        
-        // Redirection vers la page d'accueil après 2 secondes
-        setTimeout(() => {
-            window.location.href = "BookSwipe.html"; // Rediriger après 2 secondes
-        }, 2000);
     });
-    
-    // Gestion de la connexion
-    const loginFormElement = document.getElementById('login-form');
-    loginFormElement.addEventListener('submit', function(e) {
+
+    // === CONNEXION ===
+    loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
-        const email = document.getElementById('login-email').value;
+
+        const email = document.getElementById('login-email').value.toLowerCase(); // minuscule
         const password = document.getElementById('login-password').value;
-        
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(user => user.email === email && user.password === password);
-        
-        if (user) {
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            document.getElementById('login-message').textContent = "Connexion réussie! Redirection...";
-            
-            // Redirection vers la page d'accueil après 1 seconde
-            setTimeout(() => {
-                window.location.href = "BookSwipe.html"; // Rediriger après 1 seconde
-            }, 1000);
-        } else {
-            document.getElementById('login-message').textContent = "Email ou mot de passe incorrect";
+        const messageEl = document.getElementById('login-message');
+        messageEl.textContent = '';
+
+        try {
+            const response = await fetch('http://localhost:3001/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, mot_de_passe: password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('currentUser', JSON.stringify(data.utilisateur));
+
+                messageEl.textContent = "Connexion réussie! Redirection...";
+                setTimeout(() => {
+                    window.location.href = "BookSwipe.html";
+                }, 1000);
+
+                updateAuthButton();
+            } else {
+                messageEl.textContent = data.error || "Échec de la connexion";
+            }
+        } catch (err) {
+            console.error(err);
+            messageEl.textContent = "Erreur réseau";
         }
     });
-    
-    // Mettre à jour le bouton de connexion dans la navbar si l'utilisateur est connecté
+
     updateAuthButton();
 });
 
 function updateAuthButton() {
     const authButton = document.getElementById('auth-button');
     if (authButton) {
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser) {
-            authButton.textContent = currentUser.name;
-            authButton.setAttribute('aria-label', `Profil de ${currentUser.name}`);
+        const email = localStorage.getItem('userEmail');
+        if (email) {
+            authButton.textContent = "Mon Compte";
+            authButton.setAttribute('aria-label', `Profil de ${email}`);
+            authButton.addEventListener('click', () => {
+                window.location.href = "profil.html";
+            });
+        } else {
+            authButton.textContent = "Connexion / Inscription";
+            authButton.setAttribute('aria-label', "Connexion ou Inscription");
+            authButton.addEventListener('click', () => {
+                window.location.href = "login.html";
+            });
         }
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    fetch('../Contenu/header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+            initializeHeader();
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement du header :', error);
+        });
+});
+
+function initializeHeader() {
+    const authButton = document.getElementById('auth-button');
+    const favorisButton = document.getElementById('favoris-button');
+    const messagesButton = document.getElementById('messages-button');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (authButton) {
+        if (currentUser) {
+            authButton.textContent = "Mon Compte";
+            authButton.setAttribute('aria-label', `Profil de ${currentUser.nom}`);
+            authButton.addEventListener('click', () => {
+                window.location.href = "profil.html";
+            });
+        } else {
+            authButton.textContent = "Connexion / Inscription";
+            authButton.setAttribute('aria-label', "Connexion ou Inscription");
+            authButton.addEventListener('click', () => {
+                window.location.href = "login.html";
+            });
+        }
+    }
+
+    if (favorisButton) {
+        favorisButton.addEventListener('click', () => {
+            window.location.href = "favoris.html";
+        });
+    }
+
+    if (messagesButton) {
+        messagesButton.addEventListener('click', () => {
+            window.location.href = "messages.html";
+        });
+    }
+
+    const searchBar = document.querySelector('.search-bar');
+    if (searchBar) {
+        searchBar.addEventListener('input', function (e) {
+            const query = e.target.value.toLowerCase();
+            const books = document.querySelectorAll('.book-card');
+            books.forEach(book => {
+                const title = book.querySelector('.book-title')?.textContent.toLowerCase() || "";
+                book.style.display = title.includes(query) ? '' : 'none';
+            });
+        });
     }
 }
