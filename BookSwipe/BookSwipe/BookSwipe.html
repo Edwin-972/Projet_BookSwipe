@@ -6,13 +6,43 @@
     <title>BookSwipe</title>
     <link rel="stylesheet" href="../Style_Css/Style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Style pour la liste de suggestions */
+        .suggestions-list {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%;
+            z-index: 10;
+            margin-top: 2px;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .suggestions-list li {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .suggestions-list li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .filter-group {
+            position: relative; /* Pour positionner correctement la liste de suggestions */
+        }
+    </style>
 </head>
 <body>
-                <!-- Header -->
-
-    <div id="header-placeholder"></div>   
+    <!-- Header -->
+    <div id="header-placeholder"></div>
     <script src="../js/header.js"></script>
-    
+    <script src="../js/Script.js"></script>
+    <script src="../js/main.js"></script>
 
     <main class="main-content">
         <h1>Bienvenue sur BookSwipe</h1>
@@ -30,36 +60,230 @@
                         <option value="histoire">Histoire</option>
                     </select>
                 </div>
+
                 <div class="filter-group">
                     <h3>État du livre</h3>
-                    <label><input type="checkbox" name="condition" value="new" aria-label="Neuf"> Neuf</label>
-                    <label><input type="checkbox" name="condition" value="used" aria-label="Occasion"> Occasion</label>
+                    <label><input type="checkbox" name="condition" value="neuf" aria-label="Neuf"> Neuf</label>
+                    <label><input type="checkbox" name="condition" value="occasion" aria-label="Occasion"> Occasion</label>
                 </div>
                 <div class="filter-group">
                     <h3>Localisation</h3>
                     <input type="text" placeholder="Entrez une ville" class="filter-input" id="location-filter" aria-label="Filtrer par localisation">
+                    <ul id="city-suggestions" class="suggestions-list"></ul>
                 </div>
                 <button class="filter-button" id="apply-filters" aria-label="Appliquer les filtres">Appliquer les filtres</button>
             </aside>
+
             <section class="books-section" id="book-list">
                 <!-- Cards des livres générées dynamiquement -->
+                <p class="loading-message">Chargement des livres...</p>
             </section>
         </div>
     </main>
-    
-        <!-- Script pour injecter le footer -->
 
+    <!-- Footer -->
     <div id="footer-placeholder"></div>
+    <script src="../js/footer.js"></script>
 
-    <script src="../Js/footer.js"></script>
     <script>
-    
+        document.addEventListener('DOMContentLoaded', async function () {
+            const authButton = document.getElementById('auth-button');
+            const favorisButton = document.getElementById('favoris-button');
+            const token = localStorage.getItem('token');
+            const locationFilter = document.getElementById('location-filter');
+            const citySuggestionsList = document.getElementById('city-suggestions');
+            let currentUser = null;
 
-        
+            // Si un token est disponible, le décoder pour obtenir les informations utilisateur
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    currentUser = payload;
+                } catch (e) {
+                    console.error('Token invalide', e);
+                }
+            }
+
+            // Mise à jour du bouton de connexion
+            if (authButton) {
+                if (currentUser) {
+                    authButton.textContent = "Mon compte";
+                    authButton.setAttribute('aria-label', `Profil de ${currentUser.email || currentUser.nom}`);
+                } else {
+                    authButton.textContent = "Connexion/Inscription";
+                    authButton.setAttribute('aria-label', "Connexion ou Inscription");
+                }
+
+                authButton.addEventListener('click', function () {
+                    if (currentUser) {
+                        if (confirm(`Déconnecter ${currentUser.email || currentUser.nom} ?`)) {
+                            localStorage.removeItem('token');
+                            window.location.reload();
+                        }
+                    } else {
+                        window.location.href = "login.html";
+                    }
+                });
+            }
+
+            // Gestion du bouton favoris
+            if (favorisButton) {
+                favorisButton.addEventListener('click', function () {
+                    if (currentUser) {
+                        window.location.href = "favoris.html";
+                    } else {
+                        alert("Vous devez être connecté pour accéder à vos favoris.");
+                        window.location.href = "login.html";
+                    }
+                });
+            }
+
+            // Gestion des suggestions de ville
+            locationFilter.addEventListener('input', async function () {
+                const query = locationFilter.value.trim();
+
+                // Si le champ est vide ou si la saisie est trop courte, on ne fait rien
+                if (query.length < 2) {
+                    citySuggestionsList.innerHTML = '';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:3001/api/adresse?query=${query}`);
+                    const textResponse = await response.text();
+                    console.log('Réponse brute du serveur (villes):', textResponse);
+                    const villes = JSON.parse(textResponse);
+
+                    // Vider la liste des suggestions avant de la remplir
+                    citySuggestionsList.innerHTML = '';
+
+                    // Si des villes sont trouvées, on les affiche dans la liste déroulante
+                    if (villes.length > 0) {
+                        villes.forEach(ville => {
+                            const li = document.createElement('li');
+                            li.textContent = `${ville.Nom_de_la_commune} (${ville.Code_postal})`;
+                            li.addEventListener('click', function () {
+                                // Lorsqu'une ville est sélectionnée, on la met dans le champ de texte
+                                locationFilter.value = ville.Nom_de_la_commune;
+                                citySuggestionsList.innerHTML = ''; // Effacer la liste après sélection
+                            });
+                            citySuggestionsList.appendChild(li);
+                        });
+                    } else {
+                        // Si aucune ville n'est trouvée, on affiche un message dans la liste
+                        const li = document.createElement('li');
+                        li.textContent = 'Aucune ville trouvée';
+                        citySuggestionsList.appendChild(li);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la recherche de la ville:', error);
+                }
+            });
+
+            // Cacher la liste des suggestions si l'utilisateur clique ailleurs
+            document.addEventListener('click', function(event) {
+                if (!locationFilter.contains(event.target) && !citySuggestionsList.contains(event.target)) {
+                    citySuggestionsList.innerHTML = ''; // Fermer la liste si on clique en dehors
+                }
+            });
+
+            // Affichage des livres
+            const bookList = document.getElementById('book-list');
+            const categoryFilter = document.getElementById('category-filter');
+            const conditionCheckboxes = document.querySelectorAll('input[name="condition"]');
+            const applyFiltersButton = document.getElementById('apply-filters');
+
+            let allBooks = [];
+
+            // Fonction pour afficher les livres avec la possibilité de filtrer
+            function displayBooks(books) {
+                bookList.innerHTML = '';
+
+                if (books.length === 0) {
+                    bookList.innerHTML = '<p class="no-results">Aucun livre trouvé</p>';
+                    return;
+                }
+
+                books.forEach(book => {
+                    const card = document.createElement('div');
+                    card.classList.add('book-card');
+
+                    // Gérer l'image (si elle existe, afficher)
+                    let imageSrc;
+                    if (book.image) {
+                        imageSrc = `data:image/jpeg;base64,${book.image}`;
+                    } else {
+                        imageSrc = '../images/default-book.jpg';
+                    }
+
+                    card.innerHTML = `
+                        <div class="book-image">
+                            <img src="${imageSrc}" alt="${book.titre}" />
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">${book.titre}</h3>
+                            <p><strong>Auteur:</strong> ${book.auteur}</p>
+                            <p><strong>Catégorie:</strong> ${book.categorie}</p>
+                            <p><strong>État:</strong> ${book.statut}</p>
+                            <p><strong>Ville:</strong> ${book.ville}</p>
+                            <p class="book-description">${book.description.substring(0, 100)}${book.description.length > 100 ? '...' : ''}</p>
+                            <p class="book-date">Ajouté le: ${new Date(book.date_ajout).toLocaleDateString()}</p>
+                        </div>
+                    `;
+
+                    // Ajouter un événement de clic pour voir les détails du livre
+                    card.addEventListener('click', () => {
+                        // Rediriger vers la page de détails du livre
+                        window.location.href = `Detaille_Livre.html?id=${book.id}`;
+                    });
+
+                    bookList.appendChild(card);
+                });
+            }
+
+            function applyFilters() {
+                const selectedCategory = categoryFilter.value.toLowerCase();
+                const locationText = locationFilter.value.toLowerCase();
+                const selectedConditions = Array.from(conditionCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value.toLowerCase());
+
+                const filteredBooks = allBooks.filter(book => {
+                    const bookCategory = book.categorie?.toLowerCase() || '';
+                    const bookLocation = book.ville?.toLowerCase() || '';
+                    const bookStatus = book.statut?.toLowerCase() || '';
+
+                    const categoryMatch = selectedCategory === 'all' || bookCategory === selectedCategory;
+                    const locationMatch = !locationText || bookLocation.includes(locationText);
+                    const conditionMatch = selectedConditions.length === 0 || selectedConditions.includes(bookStatus);
+
+                    return categoryMatch && locationMatch && conditionMatch;
+                });
+
+                displayBooks(filteredBooks);
+            }
+
+            // Récupérer les livres depuis l'API
+            try {
+                bookList.innerHTML = '<p class="loading-message">Chargement des livres...</p>';
+
+                const response = await fetch('http://localhost:3001/api/annonces_livres');
+                const textResponse = await response.text(); // Lire la réponse comme du texte brut
+                console.log('Réponse brute du serveur:', textResponse); // Afficher la réponse brute dans la console
+                if (response.ok) {
+                    allBooks = JSON.parse(textResponse); // Parser le texte en JSON
+                    displayBooks(allBooks);
+                } else {
+                    throw new Error('Erreur lors de la récupération des livres');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                bookList.innerHTML = `<p class="error-message">Impossible de charger les livres. Erreur: ${error.message}</p>`;
+            }
+
+            // Ajouter les gestionnaires d'événements pour les filtres
+            applyFiltersButton.addEventListener('click', applyFilters);
+        });
     </script>
-    
-
-    <script src="../Js/Script.js"></script>
 </body>
-
 </html>

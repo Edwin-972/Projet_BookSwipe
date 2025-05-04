@@ -8,30 +8,29 @@
   <link rel="stylesheet" href="../Style_Css/Style.css">
   <link rel="stylesheet" href="../Style_Css/deposer.css">
 </head>
-
 <body>
-            <!-- Header -->
 
-  <div id="header-placeholder"></div>   
-    <script src="../js/header.js"></script>
-    
+  <div id="header-placeholder"></div>
+  <script src="../js/header.js"></script>
 
   <main class="main-content depot-main">
     <h1>Déposer une annonce</h1>
-    <form id="annonce-form" class="depot-form" aria-label="Formulaire de dépôt d'annonce">
+    <form id="annonce-form" class="depot-form" enctype="multipart/form-data">
       <div class="form-group">
-        <label for="title" class="required-field">Titre du livre</label>
-        <input type="text" id="title" name="title" required placeholder="Ex: Le Petit Prince">
+        <label for="titleSelect" class="required-field">Titre du livre</label>
+        <select id="titleSelect" name="title" required>
+          <option value="" disabled selected>Sélectionnez un livre</option>
+        </select>
       </div>
 
       <div class="form-group">
         <label for="author" class="required-field">Auteur</label>
-        <input type="text" id="author" name="author" required placeholder="Ex: Antoine de Saint-Exupéry">
+        <input type="text" id="author" name="author" required>
       </div>
 
       <div class="form-group">
         <label for="category" class="required-field">Catégorie</label>
-        <select id="category" name="category" required aria-label="Sélectionner la catégorie du livre">
+        <select id="category" name="category" required>
           <option value="" disabled selected>Sélectionnez une catégorie</option>
           <option value="fiction">Fiction</option>
           <option value="non-fiction">Non-Fiction</option>
@@ -42,7 +41,7 @@
 
       <div class="form-group">
         <label for="condition" class="required-field">État du livre</label>
-        <select id="condition" name="condition" required aria-label="Sélectionner l'état du livre">
+        <select id="condition" name="condition" required>
           <option value="" disabled selected>Sélectionnez l'état</option>
           <option value="new">Neuf</option>
           <option value="used">Occasion</option>
@@ -50,49 +49,42 @@
       </div>
 
       <div class="form-group">
-        <label for="location" class="required-field">Localisation</label>
-        <input type="text" id="location" name="location" required placeholder="Ex: Paris, France">
+        <label for="city" class="required-field">Ville</label>
+        <input type="text" id="city" name="city" required>
+        <ul id="city-suggestions" class="suggestions-list"></ul>
       </div>
 
       <div class="form-group">
         <label for="description" class="required-field">Description</label>
-        <textarea id="description" name="description" required placeholder="Décrivez l'état du livre, son histoire, et ce que vous souhaitez en échange."></textarea>
+        <textarea id="description" name="description" required></textarea>
       </div>
 
       <div class="form-group">
-        <label for="image-upload">Image du livre</label>
-        <input type="file" id="image-upload" accept="image/*" style="display: none;">
-        <div id="drop-zone" class="drop-zone" aria-label="Zone de dépôt pour télécharger une image">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <p>Glissez-déposez une image ici ou cliquez pour sélectionner</p>
-          <p class="small">Formats acceptés : JPG, PNG (max 2MB)</p>
-        </div>
+        <label for="image" class="required-field">Image du livre</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
       </div>
 
-      <button type="submit" class="submit-button" aria-label="Publier l'annonce">
+      <button type="submit" class="submit-button">
         <span class="button-text">Publier l'annonce</span>
-        <div class="loading">
+        <div class="loading" style="display:none;">
           <div class="loading-spinner"></div>
           <span>Publication en cours...</span>
         </div>
       </button>
 
-      <div class="confirmation-message" role="alert">
+      <div class="confirmation-message" style="display:none;" role="alert">
         <i class="fas fa-check-circle"></i> Votre annonce a été publiée avec succès !
       </div>
 
-      <div class="error-message" role="alert">
+      <div class="error-message" style="display:none;" role="alert">
         <i class="fas fa-exclamation-circle"></i> Une erreur est survenue lors de la publication.
       </div>
     </form>
   </main>
-    <!-- Script pour injecter le footer -->
 
   <div id="footer-placeholder"></div>
+  <script src="../js/footer.js"></script>
+  <script src="../js/Depose.js"></script>
 
-  <script src="../Js/footer.js"></script>
-
-  <script src="../Js/Depose.js"></script>
- 
 </body>
 </html>
