@@ -24,84 +24,7 @@
             flex-direction: column;
         }
         
-        /* Header cohérent avec BookSwipe.html */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: white;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .navbar-left, .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        
-        .navbar-center {
-            flex: 1;
-            max-width: 500px;
-            margin: 0 1.5rem;
-            position: relative;
-        }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        .nav-button {
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            background: none;
-            border: none;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.3s;
-            font-size: 0.9rem;
-            background-color: #000000;
-        }
-        
-        .nav-button:hover {
-            color: var(--primary);
-        }
-        
-        .search-bar {
-            width: 100%;
-            padding: 0.6rem 1rem 0.6rem 2.5rem;
-            border: 1px solid var(--light-gray);
-            border-radius: 50px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        
-        .search-bar:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
-        
-        .main-content {
-            padding: 2rem 1rem;
-            flex: 1;
-        }
+
         
         /* Contenu spécifique à la page de détails */
         #book-details-container {
@@ -233,93 +156,41 @@
         
         .contact-button {
             display: block;
-            width: calc(100% - 5rem);
+            width: calc(80% - 2rem);
             padding: 1rem;
             background-color: var(--primary);
             color: white;
             border: none;
             border-radius: var(--border-radius);
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 2;
             cursor: pointer;
-            margin: 2rem auto;
             text-align: center;
+            transition: background-color 0.3s;
+            
+            /* Nouvelle ligne pour remonter le bouton */
+            margin-top: -1rem;
+           
+        }
+        .favori-button {
+            background-color: var(--primary);
+            display: block;
+            padding: 1rem;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 200;
+            cursor: pointer;
+            margin: 2rem 0; /* supprime l'auto-centre */
+            text-align: left;
             transition: background-color 0.3s;
         }
         
         .contact-button:hover {
             background-color: var(--primary-dark);
         }
-        
-        /* Footer cohérent avec BookSwipe.html */
-        .footer {
-            background-color: #333;
-            color: white;
-            padding: 40px 20px 20px;
-            font-family: Arial, sans-serif;
-        }
-        
-        .footer-container {
-            display: flex;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .footer-title {
-            flex: 1;
-            min-width: 200px;
-            margin-left: auto;
-            text-align: right;
-        }
-        
-        .footer-title h2 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #f4f4f4;
-            margin-bottom: 15px;
-        }
-        
-        .footer-section {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .footer-section h3 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #f4f4f4;
-        }
-        
-        .footer-section ul {
-            list-style: none;
-        }
-        
-        .footer-section ul li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-section ul li a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-section ul li a:hover {
-            color: white;
-        }
-        
-        .footer-copyright {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #555;
-            font-size: 14px;
-            color: #aaa;
-        }
-        
+               
         /* Responsive */
         @media (max-width: 768px) {
             .navbar {
@@ -364,6 +235,7 @@
                 grid-template-columns: 1fr;
             }
         }
+        
         
         /* Animation */
         @keyframes fadeIn {
